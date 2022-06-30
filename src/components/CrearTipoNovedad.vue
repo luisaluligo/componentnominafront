@@ -15,12 +15,14 @@
           label="Concepto tipo novedad:"
           label-for="select-concepto"
         >
-          <b-form-select
+         <select
             id="select-concepto"
             v-model="form.tipo_novedad.tiponovedad_data.tipoconcepto_tipnov"
-            :options="options"
-            required
-          ></b-form-select>
+          >
+            <option value="ingreso">ingreso</option>
+            <option value="descuento">descuento</option>
+          </select>
+        
         </b-form-group>
 
         <b-form-group label="Valor tipo novedad:" label-for="input-number">
@@ -59,11 +61,6 @@ export default {
           },
         },
       },
-      options: [
-        { text: "Seleccione uno", value: null },
-        "ingreso",
-        "descuento",
-      ],
       show: true,
       data_respuesta: [],
     };
@@ -99,13 +96,13 @@ export default {
 
       let token = localStorage.getItem("token_access");
       let user_id = jwt_decode(token).user_id.toString();
-     
       this.form.tipo_novedad.user = user_id;
-      
+            console.log("usuario"+this.form.user)
+
       axios
         .post(
           "https://componentnominaback.herokuapp.com/crearTipoNovedad/",
-         this.form.tipo_novedad,
+          this.form,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -113,6 +110,7 @@ export default {
         .then((result) => {
           this.data_respuesta = result.data;
            console.log('lo logramos')
+           console.log(result.data)
           alert("El registro fue exitoso");
         })
         .catch((error) => {

@@ -38,8 +38,7 @@
         >
           <b-form-select
             id="select-concepto"
-            v-model="form.tipo_novedad.tiponovedad_data.tipoconcepto_tipnov"
-            :options="options"
+            v-model="form.tipo_novedad.tiponovedad_data.tipoconcepto_tipnov" :options="options"
             required
           ></b-form-select>
         </b-form-group>
@@ -158,6 +157,7 @@ export default {
         })
         .catch((error) => {
           console.log(error);
+
           if (error.response.status == "401")
             alert("ERROR 401: Las credenciales son incorrectas o han expirado");
           else if (error.response.status == "400")
@@ -166,7 +166,7 @@ export default {
             );
         });
     },
-    verifyToken: async function () {
+    verifyToken:  function () {
       return axios
         .post(
           "https://componentnominaback.herokuapp.com/refresh/",
@@ -204,7 +204,8 @@ export default {
         )
         .then((result) => {
           this.listaTipNov = result.data;
-          
+           console.log("y--");
+           console.log(result);
           if (this.show) {
             console.log("true--");
             this.form.tipo_novedad.tiponovedad_data.nombre_tipnov =
@@ -214,9 +215,10 @@ export default {
             this.form.tipo_novedad.tiponovedad_data.tipoconcepto_tipnov =
               result.data.tipoconcepto_tipnov;
 
-              for (let index = 0; index <= result.data.length; index++) {
+              for (let index = 0; index <= result.data.length-1 ; index++) {
                  console.log(result.data[index])
-                if (result.data[index].id === this.$refs.seleccionado.value) {
+                
+                if (result.data[index].nombre_tipnov === this.$refs.seleccionado.value) {
                   data_respuesta = result.data[index];
                    console.log("igual")
                 }
@@ -235,7 +237,7 @@ export default {
             );
         });
     },
-    onChange(event) {
+    onChange(event) {console.log(this);
       console.log(this.tipnov_selected);
       console.log(this.$refs.seleccionado.value);
 
@@ -251,6 +253,7 @@ export default {
   },
   created: async function () {
     this.getDataTipNov();
+      this.processEditarTipoNovedad();
   },
 };
 </script>

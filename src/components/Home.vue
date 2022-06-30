@@ -1,21 +1,22 @@
 <template>
-  <div id="home" class="home">
-    <div class="bienvenida">
-      <h2 id="saludo">
-        ¡Bienvenido <span> {{ username }} </span>! <br />
-        <br />
-        Seleccione la opción que desee ejecutar.
-      </h2>
-    </div>
-
-    <div v-if="is_superuser" class="botonRegistrarUsuario">
-      <h4>Usuarios del sistema</h4>
+  <div v-if="is_superuser" class="botonRegistrarUsuario">
+     
       <nav>
         <b-button v-on:click="loadRegistrarUsuario">
           Registrar nuevo usuario
         </b-button>
       </nav>
+   </div>
+  <div id="home" class="home">
+    <div class="bienvenida">
+      <h2 id="saludo">
+        ¡Bienvenido <span> {{ username }} </span>! <br />
+        <br />
+        
+      </h2>
     </div>
+
+    
     <div class="container-fluid" id="main-content">
     <div class="row text-white text-center">
         
@@ -186,7 +187,14 @@ export default {
   font-size: 30px;
   color: black;
   text-align: center;
-  margin-top: 5%;
+  margin-bottom: 5%;
+}
+.botonRegistrarUsuario{
+   font-size: 30px;
+  color: black;
+  text-align: right;
+  margin-bottom: 5%;
+  margin-right: 5%;
 }
 
 

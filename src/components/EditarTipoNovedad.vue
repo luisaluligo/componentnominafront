@@ -139,19 +139,20 @@ export default {
           if (this.show) {
             console.log("true");
 
-            alert(JSON.stringify(result.data));
+           
             this.form.tipo_novedad.tiponovedad_data.nombre_tipnov =
               result.data.nombre_tipnov;
             this.form.tipo_novedad.tiponovedad_data.valorbase_tipnov =
               result.data.valorbase_tipnov;
             this.form.tipo_novedad.tiponovedad_data.tipoconcepto_tipnov =
               result.data.tipoconcepto_tipnov;
+               this.getDataTipNov();
               
           } else {
             console.log("truelo");
           }
 
-          alert("El registro fue exitoso");
+          alert("Se Edito el registro exitosamente!");
         })
         .catch((error) => {
           console.log(error);

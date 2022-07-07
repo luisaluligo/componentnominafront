@@ -112,6 +112,7 @@ export default {
       });
     },
     processEditarTipoNovedad: async function () {
+        console.log(localStorage)
       if (
         localStorage.getItem("token_access") === null ||
         localStorage.getItem("token_refresh") === null
@@ -123,15 +124,12 @@ export default {
 
       let token = localStorage.getItem("token_access");
       let user_id = jwt_decode(token).user_id.toString();
-      console.log("codigo novedad"+ this.form.tipo_novedad.tiponovedad_data.cod_tipnov);
       this.form.tipo_novedad.user = user_id;
-      console.log(user_id);
-       console.log(this.tipnov_selected);
-         
+     
       axios
-        .post(
+        .put(
             `https://componentnominaback.herokuapp.com/editarTipoNovedad/${user_id}/${this.tipnov_selected}`,
-          this.form.tipo_novedad,
+          this.form.tipo_novedad.tiponovedad_data,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

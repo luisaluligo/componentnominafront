@@ -125,10 +125,10 @@ export default {
       let token = localStorage.getItem("token_access");
       let user_id = jwt_decode(token).user_id.toString();
       this.form.tipo_novedad.user = user_id;
-     
+       console.log( this.form.tipo_novedad.tiponovedad_data)
       axios
         .put(
-            `https://componentnominaback.herokuapp.com/editarTipoNovedad/${user_id}/${this.tipnov_selected}`,
+            `https://componentnominaback.herokuapp.com/editarTipoNovedad/${user_id}/${this.tipnov_selected}/`,
           this.form.tipo_novedad.tiponovedad_data,
           {
             headers: { Authorization: `Bearer ${token}` },

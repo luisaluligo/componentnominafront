@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="container">
+     <h2>Formulario Tipo Novedad</h2>
       <b-form @submit="processCrearTipoNovedad" @reset="onReset" v-if="show">
         <b-form-group label="Nombre tipo novedad:" label-for="input-name">
           <b-form-input
@@ -148,7 +149,20 @@ export default {
 </script>
 
 <style>
-</style>
+.container {
+  border: 3px solid #283747;
+border-radius: 10px;
+width: 25%;
+height: 60%;
+margin-top: 2%;
+justify-content: center;
+align-items: center;
 
-<style>
+}
+.container h2 {
+  font-size: 30px;
+  color: black;
+  text-align: center;
+  margin-bottom: 5%;
+}
 </style>

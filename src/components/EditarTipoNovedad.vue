@@ -2,20 +2,19 @@
   <div>
     <div class="container">
       <div>
-        <b-form-group label="Nombre tipo novedad:" label-for="input-name">
+        <b-form-group label="Nombre tipo novedad:" label-for="input-name"    v-if="!show" >
           <select
             class="mb-3"
-            ref="seleccionado"
             v-model="tipnov_selected"
-            @change="onChange(this.value)"
+            @change="onChange($event)"
           >
             <option :value="null" disabled>
               seleccione el tipo de novedad
             </option>
             <option
               v-for="tipnov in listaTipNov"
-              :key="tipnov.cod_tipnov"
-              :value="tipnov.cod_tipnov"
+              :key="tipnov.nombre_tipnov"
+              :value="tipnov.codigo_tipnov"
             >
               {{ tipnov.nombre_tipnov }}
             </option>
@@ -36,12 +35,15 @@
           label="Concepto tipo novedad:"
           label-for="select-concepto"
         >
-          <b-form-select
-            id="select-concepto"
-            v-model="form.tipo_novedad.tiponovedad_data.tipoconcepto_tipnov" :options="options"
-            required
-          ></b-form-select>
+          <b-form-select id="select-concepto" v-model="form.tipo_novedad.tiponovedad_data.tipoconcepto_tipnov" :options="options">
+          </b-form-select>
+          
         </b-form-group>
+
+        <v-select 
+    :options="options" 
+    label="title"
+  ></v-select>
 
         <b-form-group label="Valor tipo novedad:" label-for="input-number">
           <b-form-input
@@ -56,9 +58,7 @@
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
-      <b-card class="mt-3" header="Form Data Result">
-        <pre class="m-0">{{ listaTipNov }}</pre>
-      </b-card>
+      
     </div>
   </div>
 </template>
@@ -71,7 +71,7 @@ export default {
   name: "EditarTipoNovedad",
   data() {
     return {
-      tipnov_selected: null,
+      tipnov_selected:null,
       form: {
         tipo_novedad: {
           user: 0,
@@ -84,9 +84,9 @@ export default {
         },
       },
       options: [
-        { text: "Seleccione uno", value: null },
-        "ingreso",
-        "descuento",
+       {value: null, text: 'Seleccionar'  },
+       {value: 'ingreso', html: '<b>ingreso</b>' },
+       {value: 'descuento', html: '<b>descuento</b>' }
       ],
       show: false,
       data_respuesta: [],
@@ -108,7 +108,7 @@ export default {
       // Trick to reset/clear native browser form validation state
       this.show = false;
       this.$nextTick(() => {
-        this.show = true;
+        this.show = false;
       });
     },
     processEditarTipoNovedad: async function () {
@@ -123,12 +123,14 @@ export default {
 
       let token = localStorage.getItem("token_access");
       let user_id = jwt_decode(token).user_id.toString();
-      console.log("id user decode" + user_id);
+      console.log("codigo novedad"+ this.form.tipo_novedad.tiponovedad_data.cod_tipnov);
       this.form.tipo_novedad.user = user_id;
-
+      console.log(user_id);
+       console.log(this.tipnov_selected);
+         
       axios
         .post(
-          "https://componentnominaback.herokuapp.com/editarTipoNovedad/",
+            `https://componentnominaback.herokuapp.com/editarTipoNovedad/${user_id}/${this.tipnov_selected}`,
           this.form.tipo_novedad,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -139,9 +141,6 @@ export default {
           if (this.show) {
             console.log("true");
 
-            
-              
-
             alert(JSON.stringify(result.data));
             this.form.tipo_novedad.tiponovedad_data.nombre_tipnov =
               result.data.nombre_tipnov;
@@ -149,6 +148,7 @@ export default {
               result.data.valorbase_tipnov;
             this.form.tipo_novedad.tiponovedad_data.tipoconcepto_tipnov =
               result.data.tipoconcepto_tipnov;
+              
           } else {
             console.log("truelo");
           }
@@ -204,25 +204,9 @@ export default {
         )
         .then((result) => {
           this.listaTipNov = result.data;
-           console.log("y--");
-           console.log(result);
+              console.log("true--" + listaTipNov);
           if (this.show) {
             console.log("true--");
-            this.form.tipo_novedad.tiponovedad_data.nombre_tipnov =
-              result.data.nombre_tipnov;
-            this.form.tipo_novedad.tiponovedad_data.valorbase_tipnov =
-              result.data.valorbase_tipnov;
-            this.form.tipo_novedad.tiponovedad_data.tipoconcepto_tipnov =
-              result.data.tipoconcepto_tipnov;
-
-              for (let index = 0; index <= result.data.length-1 ; index++) {
-                 console.log(result.data[index])
-                
-                if (result.data[index].nombre_tipnov === this.$refs.seleccionado.value) {
-                  data_respuesta = result.data[index];
-                   console.log("igual")
-                }
-              }
             console.log(data_respuesta)
           } else {
             console.log("truelo");
@@ -237,13 +221,25 @@ export default {
             );
         });
     },
-    onChange(event) {console.log(this);
-      console.log(this.tipnov_selected);
-      console.log(this.$refs.seleccionado.value);
+    onChange(event) {
 
-      if (this.$refs.seleccionado.value) {
-        this.show = true;
-        this.getDataTipNov();
+       
+     if (event.target.value) {
+        for (let index = 0; index <= this.listaTipNov.length-1 ; index++) {
+                if (this.listaTipNov[index]["codigo_tipnov"] == this.tipnov_selected) {
+                   this.data_respuesta = this.listaTipNov[index];
+
+                }
+        }
+
+        this.form.tipo_novedad.tiponovedad_data.nombre_tipnov =
+             this.data_respuesta["nombre_tipnov"] ;
+        this.form.tipo_novedad.tiponovedad_data.valorbase_tipnov =
+               this.data_respuesta["valorbase_tipnov"];
+        this.form.tipo_novedad.tiponovedad_data.tipoconcepto_tipnov =
+               this.data_respuesta["tipoconcepto_tipnov"];
+        this.show = true
+
       }
     },
 
@@ -253,7 +249,7 @@ export default {
   },
   created: async function () {
     this.getDataTipNov();
-      this.processEditarTipoNovedad();
+    this.processEditarTipoNovedad();
   },
 };
 </script>
